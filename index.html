@@ -14,10 +14,11 @@ body {
 #game-wrapper { width:100%; display:flex; justify-content:center; align-items:center; }  
 #app { text-align:center; }  /* MAPAS */
 .map { display:grid; gap:4px; background:#222; margin-top:10px; }
-.village-map { grid-template-columns:repeat(4,48px); }
-.world-map   { grid-template-columns:repeat(5,48px); }
-.house-map   { grid-template-columns:repeat(3,48px); }
-.forest-map  { grid-template-columns:repeat(5,48px); }
+.village-map      { grid-template-columns:repeat(4,48px); }
+.world-map        { grid-template-columns:repeat(5,48px); }
+.house-map        { grid-template-columns:repeat(3,48px); }
+.forest-map       { grid-template-columns:repeat(5,48px); }
+.Wizard-House-map { grid-template-columns:repeat(3,48px); }
 
 /* Tiles */
 .tile {
@@ -125,7 +126,100 @@ border-radius:5px; cursor:pointer; font-size:14px;
   <p id="dialog-text"></p>  
   <button id="dialog-ok">OK</button>  
 </div>  <script>  
-let dialogActive = false;  
+let dialogActive = false; 
+  
+let frameSprite = 0;
+  
+// — SPRITES —
+  
+// - Update -
+function updateSprites() {
+  document.querySelectorAll(".sprite").forEach(canvas => {
+    const scale = canvas.dataset.scale ?? 3;
+    const frame = frameSprite;
+    const newCanvas = createPlayer(frame, parseInt(scale));
+    
+    newCanvas.classList.add("sprite");
+    newCanvas.dataset.scale = scale; // manter escala
+
+    // substitui o canvas antigo
+    canvas.replaceWith(newCanvas);
+  });
+}
+
+// - Player -
+function createPlayer(frame, scale = 3) {
+  const sprite1 = [
+    "xxxxbbbbbbbbxxxx",
+    "xxxbwwwwwwwabxxx",
+    "xxbawwwwwwwwabxx",
+    "xxbwwwwwwwwwwbxx",
+    "xxbwwwwbwwwbwbxx",
+    "xxbwwwwbwwwbwbxx",
+    "xxbwwwwbaaabwbxx",
+    "xxbawwwwwwwwabxx",
+    "xxxbwwwwwwwabxxx",
+    "xxxbbawwaabbxxxx",
+    "xxxbwwwwwwwbxxxx",
+    "xxxbwwwwwwwbxxxx",
+    "xxxbwwwwwwwbxxxx",
+    "xxxbwwwbwaabxxxx",
+    "xxxbwwwbaaabxxxx",
+    "xxxbwwbbaabxxxxx"
+  ];
+  
+  const sprite2 = [
+    "xxxxxxxxxxxxxxxx",
+    "xxxxbbbbbbbbxxxx",
+    "xxxbwwwwwwwabxxx",
+    "xxbawwwwwwwwabxx",
+    "xxbwwwwwwwwwwbxx",
+    "xxbwwwwbwwwbwbxx",
+    "xxbwwwwbwwwbwbxx",
+    "xxbwwwwbaaabwbxx",
+    "xxbawwwwwwwwabxx",
+    "xxxbwwwwwwwabxxx",
+    "xxxbbawwaabbxxxx",
+    "xxxbwwwwwwwbxxxx",
+    "xxxbwwwwwwwbxxxx",
+    "xxxbwwwbwaabxxxx",
+    "xxxbwwwbaaabxxxx",
+    "xxxbwwbbaabxxxxx"
+  ];
+
+  const colorMap = {
+    b: "#000000",
+    w: "#ffffff",
+    a: "#9fa8da"
+  };
+  
+  const spriteData = frame === 0 ? sprite1 : sprite2;
+  
+  const width = spriteData[0].length;
+  const height = spriteData.length;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width * scale;
+  canvas.height = height * scale;
+  const ctx = canvas.getContext("2d");
+
+  spriteData.forEach((row, y) => {
+    for (let x = 0; x < row.length; x++) {
+      const cell = row[x];
+      if (cell !== "x") {
+        ctx.fillStyle = colorMap[cell] || "#000000";
+        ctx.fillRect(x * scale, y * scale, scale, scale);
+      }
+    }
+  });
+
+  // evita distorções e deixa nítido
+  canvas.style.imageRendering = "pixelated";
+  canvas.style.width = `${width * scale}px`;
+  canvas.style.height = `${height * scale}px`;
+  
+  return canvas;
+}
     
 // — Game Over —  
 function checkGameOver() {  
@@ -159,7 +253,7 @@ function checkGameOver() {
 function tryRandomEncounter() {  
   if (area !== "world" && area !== "forest") return false;  
   
-  if (Math.random() < 0.15 && area === "world") {  
+  if (Math.random() < 0.25 && area === "world") {  
     prevArea = area;  
     currentEnemy = {...enemies[Math.floor(Math.random() * 2)]};  
     area = "battle";  
@@ -247,7 +341,7 @@ const worldGrid=[
   ["Campo","Campo","Campo","Campo","Campo"],  
   ["Saída","Campo","Casa","Campo","Campo"],  
   ["Campo","Campo","Campo","Árvore","Campo"],  
-  ["Campo","Árvore","Campo","Campo","Campo"]  
+  ["Campo","Árvore","Campo","Campo","CasaDoMago"]  
 ];  
     
 const forestGrid = [  
@@ -256,6 +350,12 @@ const forestGrid = [
   ["Árvore","Floresta","Árvore","Floresta","Árvore"],  
   ["Árvore","Floresta","Árvore","Tesouro","Árvore"],  
   ["Árvore","Saída","Árvore","Árvore","Árvore"]   
+];  
+  
+const wizardHouseGrid = [  
+  ["Casa","Casa","Casa"],  
+  ["Saída","Casa","Mago"],  
+  ["Casa","Casa","Casa"]
 ];  
   
 // — INIMIGOS —  
@@ -422,7 +522,60 @@ function render(){
   if(area==="world") renderWorld();  
   if(area==="battle") renderBattle();  
   if(area==="house") renderHouse();  
-  if(area==="forest") renderForest();  
+  if(area==="forest") renderForest(); 
+  if(area==="wizardHouse") renderWizardHouse();
+} 
+  
+// — CASA DO MAGO —  
+function renderWizardHouse(){  
+  const cont=document.createElement("div"); cont.innerHTML="<h3>🏚️ Destroços</h3>";  
+  const map=document.createElement("div"); map.classList.add("map","Wizard-House-map");  
+  
+  wizardHouseGrid.forEach((row,y)=>{  
+    row.forEach((cell,x)=>{  
+      const t=document.createElement("div"); t.classList.add("tile");  
+      
+      if(cell==="Mago"){ t.classList.add("npc"); t.textContent="🧙‍♂️"; }    
+      if(cell==="Saída"){ t.textContent="⬅️"; }  
+      
+      if(player.x===x && player.y===y){ 
+        t.innerHTML = "";
+        const sprite = createPlayer(frameSprite, 3);
+        sprite.classList.add("sprite");
+        sprite.dataset.scale = 3;
+        t.appendChild(sprite);
+      };
+
+      t.onclick=()=>{  
+        if(!isAdjacent(x,y,player)) return; 
+        
+        player.x=x; 
+        player.y=y;  
+
+        if(cell==="Mago"){  
+          const rnd = Math.random();  
+          let textoNPC;  
+          
+          if (true) {  
+            textoNPC = "🧙‍♂️ Mago: Olá, viajante! Se me der um 'Cristal de Mana', eu darei um efeito aleatório para sua arma!";  
+          } 
+            
+          else {  
+            textoNPC = "🧙‍♂️ Mago:";  
+          }  
+          
+          render();   
+          showDialog(textoNPC, ()=>render());  
+        }  
+        else if(cell==="Saída"){ player.x=4; player.y=4; area="world"; render(); }  
+        else render();  
+      };  
+  
+      map.appendChild(t);  
+    });  
+  });  
+  
+  cont.appendChild(map); document.getElementById("app").appendChild(cont);  
 }  
     
 // — FLORESTA —  
@@ -433,11 +586,19 @@ function renderForest(){
   
   forestGrid.forEach((row,y)=>{  
     row.forEach((cell,x)=>{  
-      const t=document.createElement("div"); t.classList.add("tile");  
-      if(player.x===x && player.y===y) t.classList.add("player");  
+      const t=document.createElement("div"); t.classList.add("tile");
+      
       if(cell==="Árvore"){ t.textContent="🌲"; }  
       if(cell==="Tesouro"){ t.classList.add("tesure"); t.textContent="💰"; }  
-      if(cell==="Saída"){ t.textContent="⬇️"; }  
+      if(cell==="Saída"){ t.textContent="⬇️"; } 
+      
+      if(player.x===x && player.y===y){ 
+        t.innerHTML = "";
+        const sprite = createPlayer(frameSprite, 3);
+        sprite.classList.add("sprite");
+        sprite.dataset.scale = 3;
+        t.appendChild(sprite);
+      };      
   
       t.onclick=()=>{  
         if(!isAdjacent(x,y,player)) return;  
@@ -475,50 +636,59 @@ function renderForest(){
 }  
   
 // — VILA —  
-function renderVillage(){  
-  const cont=document.createElement("div"); cont.innerHTML="<h3>🏡 Vila</h3>";  
-  const map=document.createElement("div"); map.classList.add("map","village-map");  
+function renderVillage(){
+  const cont=document.createElement("div"); cont.innerHTML="<h3>🏡 Vila</h3>";
+  const map=document.createElement("div"); map.classList.add("map","village-map");
   
-  villageGrid.forEach((row,y)=>{  
-    row.forEach((cell,x)=>{  
-      const t=document.createElement("div"); t.classList.add("tile");  
-      if(player.x===x && player.y===y) t.classList.add("player");  
-      if(cell==="NPC"){ t.classList.add("npc"); t.textContent="🙂"; }  
-      if(cell==="Casa"){ t.classList.add("house"); t.textContent="🏠"; }  
-      if(cell==="Saída"){ t.textContent="➡️"; }  
-      if(cell==="Loja"){ t.classList.add("npc"); t.textContent="🛍️"; }  
-  
-      t.onclick=()=>{  
-        if(!isAdjacent(x,y,player)) return; 
+  villageGrid.forEach((row,y)=>{
+    row.forEach((cell,x)=>{
+      const t=document.createElement("div"); t.classList.add("tile");
         
-        player.x=x; 
-        player.y=y;  
-
-        if(cell==="NPC"){  
-          const rnd = Math.random();  
-          let textoNPC;  
-          
-          if (rnd < 0.5) {  
-            textoNPC = "🙂 NPC: Olá, como vai?";  
-          } else {  
-            textoNPC = "🙂 NPC: Cuidado nas estradas… ouvi rumores de monstros.";  
-          }  
-          
-          render();   
-          showDialog(textoNPC, ()=>render());  
-        }  
-        else if(cell==="Loja"){ render(); openShop(); }  
-        else if(cell==="Saída"){ player.x=2; player.y=2; area="world"; render(); }  
-        else if(cell==="Casa"){ area="house"; housePlayer.x=1; housePlayer.y=2; render(); }  
-        else render();  
-      };  
+      if(cell==="NPC"){ t.classList.add("npc"); t.textContent="🙂"; }
+      if(cell==="Casa"){ t.classList.add("house"); t.textContent="🏠"; }
+      if(cell==="Saída"){ t.textContent="➡️"; }
+      if(cell==="Loja"){ t.classList.add("npc"); t.textContent="🛍️"; }
+        
+      if(player.x===x && player.y===y){ 
+        t.innerHTML = "";
+        const sprite = createPlayer(frameSprite, 3);
+        sprite.classList.add("sprite");
+        sprite.dataset.scale = 3;
+        t.appendChild(sprite);
+      };
+      
+      t.onclick=()=>{    
+        if(!isAdjacent(x,y,player)) return;   
+            
+        player.x=x;   
+        player.y=y;    
+      
+        if(cell==="NPC"){    
+          const rnd = Math.random();    
+          let textoNPC;    
+              
+          if (rnd < 0.5) {    
+            textoNPC = "🙂 Morador: Olá, como vai?";    
+          } else {    
+            textoNPC = "🙂 Morador: Cuidado nas estradas… ouvi rumores de monstros.";    
+          }    
+              
+          render();     
+          showDialog(textoNPC, ()=>render());    
+        }    
+        else if(cell==="Loja"){ render(); openShop(); }    
+        else if(cell==="Saída"){ player.x=2; player.y=2; area="world"; render(); }    
+        else if(cell==="Casa"){ area="house"; housePlayer.x=1; housePlayer.y=2; render(); }    
+        else render();    
+      };    
+      
+      map.appendChild(t);    
+    });
   
-      map.appendChild(t);  
-    });  
-  });  
+  });
   
-  cont.appendChild(map); document.getElementById("app").appendChild(cont);  
-}  
+  cont.appendChild(map); document.getElementById("app").appendChild(cont);
+}
   
 // — MUNDO —  
 function renderWorld(){  
@@ -528,11 +698,20 @@ function renderWorld(){
   worldGrid.forEach((row,y)=>{  
     row.forEach((cell,x)=>{  
       const t=document.createElement("div"); t.classList.add("tile");  
-      if(player.x===x && player.y===y) t.classList.add("player");  
+      
       if(cell==="Árvore"){; t.textContent="🌲"; }  
       if(cell==="Casa"){ t.classList.add("house"); t.textContent="🏘️"; }  
       if(cell==="Floresta"){ t.classList.add("forest"); t.textContent="🌲"; }
-      if(cell==="Saída"){ t.textContent="⬅️"; }      
+      if(cell==="Saída"){ t.textContent="⬅️"; } 
+      if(cell==="CasaDoMago"){ t.classList.add("house"); t.textContent="🏚️"; } 
+      
+      if(player.x===x && player.y===y){ 
+        t.innerHTML = "";
+        const sprite = createPlayer(frameSprite, 3);
+        sprite.classList.add("sprite");
+        sprite.dataset.scale = 3;
+        t.appendChild(sprite);
+      };      
   
       t.onclick = () => {  
         if(!isAdjacent(x,y,player)) return;  
@@ -540,6 +719,14 @@ function renderWorld(){
         // mover o player  
         player.x = x;  
         player.y = y;  
+        
+        if(cell==="CasaDoMago"){  
+          player.x = 0;  
+          player.y = 1;  
+          area="wizardHouse";  
+          render();  
+          return;  
+        }  
 
         if(cell==="Árvore"){  
           forestPlayer.x = x;  
@@ -554,6 +741,7 @@ function renderWorld(){
           render();  
           return;  
         }  
+        
         if(cell==="Floresta"){  
           player.x = 1;  
           player.y = 4;  
@@ -724,10 +912,17 @@ function renderHouse(){
     row.forEach((cell,x)=>{
       const t=document.createElement("div"); t.classList.add("tile");
 
-      if(housePlayer.x===x && housePlayer.y===y) t.classList.add("player");
       if(cell==="📦") t.textContent="📦";
       if(cell==="🛏️") t.textContent="🛏️";
       if(cell==="⬇️") t.textContent="⬇️";
+      
+      if(housePlayer.x===x && housePlayer.y===y){ 
+        t.innerHTML = "";
+        const sprite = createPlayer(frameSprite, 3);
+        sprite.classList.add("sprite");
+        sprite.dataset.scale = 3;
+        t.appendChild(sprite);
+      };
 
       t.onclick=()=>{
         if(!isAdjacent(x,y,housePlayer)) return;
@@ -760,6 +955,9 @@ function renderHouse(){
 }
 
 render();
+  
+setInterval(() => { frameSprite = (frameSprite + 1) % 2; updateSprites(); }, 300); 
+
 </script>
 
 </body>
