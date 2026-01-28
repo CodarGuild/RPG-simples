@@ -1,3 +1,4 @@
+// — Variáveis Importantes —
 let dialogActive = false; 
   
 let frameSprite = 0;
@@ -9,36 +10,36 @@ let prevArea = null;
     
 // — Itens —  
 const ringItem = {  
-  type: "💍",  
+  type: createRing1,  
   hpBonus: 10,      
   dmgBonus: 5
 };  
     
 const swordItem = {  
-  type: "🗡️",  
+  type: createSword1,  
   hpBonus: 0,      
   dmgBonus: 5  
 };  
     
 const poutionItem = {  
-  type: "🧪",  
+  type: createPc1,  
   bonus: 25,       
 };  
     
 const poutionItem1 = {  
-  type: "💉",  
+  type: createPc2,  
   bonus: false,       
 };  
   
 const armorItem = {  
-  type: "🪖",  
+  type: createHat1,  
   hpBonus: 10,      
   dmgBonus: 0  
 };  
     
 // — Player —  
 const player={  
-  x:3,y:0,  
+  x:0,y:3,  
   hp:50,maxHp:50, 
   dmg:5,
   inventory:[],   
@@ -103,7 +104,7 @@ let currentEnemy=null,enemyPos={x:0,y:0};
 // — DIÁLOGO —  
 const dialogBox=document.getElementById("dialog-box");  
 const dialogText=document.getElementById("dialog-text");  
-const dialogOK=document.getElementById("dialog-ok");  
+const dialogOK=document.getElementById("dialog-ok");
 
 function showDialog(msg,callback){  
   dialogActive = true;  
@@ -153,7 +154,9 @@ function openInventory(){
   player.inventory.forEach((item,i)=>{  
     const slot=document.createElement("div");  
     slot.classList.add("inventory-slot");  
-    slot.textContent=item.type;  
+    const spriteEl = item.type();
+    slot.appendChild(spriteEl);
+      
     if(item.id==="espada 01" && player.swordEquipped) slot.classList.add("equipped");  
     if(item.id==="anel 01" && player.ringEquipped) slot.classList.add("equipped");  
     if(item.id==="armadura 01" && player.armorEquipped) slot.classList.add("equipped");  

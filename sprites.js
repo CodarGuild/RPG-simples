@@ -14,7 +14,8 @@ const colorMap = {
     c: "#b5bdbb",
     n: "#7e8483",
     y: "#dba976",
-    t: "#7d422d"
+    t: "#7d422d",
+    z: "#ffd5ab"
   };
   
 // - Update -
@@ -72,7 +73,13 @@ function createSprite(imageF, frame, scale = 3) {
   
   // imagem
   if (imageF==="player"){
-    fgCanvas = createPlayer(frame, scale);
+    if (player.armorEquipped){
+        fgCanvas = createNPC(frame, scale);
+    }
+      
+    else {
+        fgCanvas = createPlayer(frame, scale);
+    }  
   }
   
   else if (imageF==="npc"){
@@ -329,46 +336,46 @@ function createMago(frame, scale = 3) {
 function createNPC(frame, scale = 3) {
   const sprite1 = [
   "xxxxxxxxxxxxxxxxxxx",
-  "xxxxxbbbbbbbbxxxxxx",
-  "xxxxbppprrrrpbxxxxx",
-  "xxxbppprrrrrrpbxxxx",
-  "xxxbpprrrrrrrrbxxxx",
-  "xxxbpprrbbbbbbbbxxx",
-  "xxxbpppbrrrrrrrrbxx",
-  "xxxbbbbbbbbbbbbbbxx",
-  "xxxbwwwwbwwwbwbxxxx",
-  "xxxbwwwwbwwwbwbxxxx",
-  "xxxbwwwwbaaabwbxxxx",
-  "xxxbawwwwwwwwabxxxx",
-  "xxxxbwwwwwwwabxxxxx",
-  "xxxxbbawwaabbxxxxxx",
-  "xxxxbwwwwwwwbxxxxxx",
-  "xxxxbwwwwwwwbxxxxxx",
-  "xxxxbwwwbwaabxxxxxx",
-  "xxxxbwwwbaaabxxxxxx",
-  "xxxxbwwbbaabxxxxxxx"
+  "xxxxxxxbbbbbbxxxxxx",
+  "xxxxxxbzzzzzzbxxxxx",
+  "xxxxxbyyzzzzzzbxxxx",
+  "xxxxxbyyyzzzzzbxxxx",
+  "xxxbbpppprrrrrrbbxx",
+  "xxbyyyyyzzzzzzzzzbx",
+  "xxbbbbbbbbbbbbbbbbx",
+  "xxxxbaaaabaaababxxx",
+  "xxxxbwwwwbwwwbwbxxx",
+  "xxxxbwwwwbaaabwbxxx",
+  "xxxxbawwwwwwwwabxxx",
+  "xxxxxbwwwwwwwabxxxx",
+  "xxxxxbbawwaabbxxxxx",
+  "xxxxxbwwwwwwwbxxxxx",
+  "xxxxxbwwwwwwwbxxxxx",
+  "xxxxxbwwwbwaabxxxxx",
+  "xxxxxbwwwbaaabxxxxx",
+  "xxxxxbwwbbaabxxxxxx"
   ];
 
   const sprite2 = [
-  "xxxxxbbbbbbbbxxxxxx",
-  "xxxxbppprrrrpbxxxxx",
-  "xxxbppprrrrrrpbxxxx",
-  "xxxbpprrrrrrrrbxxxx",
-  "xxxbpprrbbbbbbbbxxx",
-  "xxxbpppbrrrrrrrrbxx",
-  "xxxbbbbbbbbbbbbbbxx",
-  "xxxbwwwwbwwwbwbxxxx",
-  "xxxbwwwwbwwwbwbxxxx",
-  "xxxbwwwwbaaabwbxxxx",
-  "xxxbawwwwwwwwabxxxx",
-  "xxxxbwwwwwwwabxxxxx",
-  "xxxxbbawwaabbxxxxxx",
-  "xxxxbwwwwwwwbxxxxxx",
-  "xxxxbwwwwwwwbxxxxxx",
-  "xxxxbwwwwwwwbxxxxxx",
-  "xxxxbwwwbwaabxxxxxx",
-  "xxxxbwwwbaaabxxxxxx",
-  "xxxxbwwbbaabxxxxxxx"
+  "xxxxxxxbbbbbbxxxxxx",
+  "xxxxxxbzzzzzzbxxxxx",
+  "xxxxxbyyzzzzzzbxxxx",
+  "xxxxxbyyyzzzzzbxxxx",
+  "xxxbbpppprrrrrrbbxx",
+  "xxbyyyyyzzzzzzzzzbx",
+  "xxbbbbbbbbbbbbbbbbx",
+  "xxxxbaaaabaaababxxx",
+  "xxxxbwwwwbwwwbwbxxx",
+  "xxxxbwwwwbaaabwbxxx",
+  "xxxxbawwwwwwwwabxxx",
+  "xxxxxbwwwwwwwabxxxx",
+  "xxxxxbbawwaabbxxxxx",
+  "xxxxxbwwwwwwwbxxxxx",
+  "xxxxxbwwwwwwwbxxxxx",
+  "xxxxxbwwwwwwwbxxxxx",
+  "xxxxxbwwwbwaabxxxxx",
+  "xxxxxbwwwbaaabxxxxx",
+  "xxxxxbwwbbaabxxxxxx"
   ];
 
   const spriteData = frame === 0 ? sprite1 : sprite2;
@@ -1285,6 +1292,356 @@ function createSeta4(scale = 3) {
   "xxxxbbawwwbbxxxx",
   "xxxxxbbaabbxxxxx",
   "xxxxxxbbbbxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx"
+  ];
+
+  const spriteData = sprite1;
+
+  const width = spriteData[0].length;
+  const height = spriteData.length;
+
+  // Tamanho final do título
+  const tileSize = 48;
+
+  // escala proporcional pra caber no título
+  const finalScale = Math.min(tileSize / width, tileSize / height);
+
+  // Define canvas destino
+  const canvas = document.createElement("canvas");
+  canvas.width = tileSize;
+  canvas.height = tileSize;
+  const ctx = canvas.getContext("2d");
+  
+  // desabilita suavização no contexto
+  ctx.imageSmoothingEnabled = false;
+  
+  // cria um canvas temporário para o sprite original
+  const temp = document.createElement("canvas");
+  const tctx = temp.getContext("2d");
+  temp.width = width;
+  temp.height = height;
+  
+  // desenha sprite original em escala 1:1 no temp
+  spriteData.forEach((row, y) => {
+    for (let x = 0; x < row.length; x++) {
+      const cell = row[x];
+      if (cell !== "x") {
+        tctx.fillStyle = colorMap[cell] || "#000000";
+        tctx.fillRect(x, y, 1, 1);
+      }
+    }
+  });
+  
+  // agora desenha no canvas destino usando drawImage
+  ctx.drawImage(
+    temp,
+    0, 0, width, height,
+    0, 0, tileSize, tileSize
+  );
+  
+  canvas.style.imageRendering = "pixelated";
+  
+  return canvas;
+}
+
+// - Anel -
+function createRing1(scale = 3) {
+  const sprite1 = [
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxbbbbxxxxxx",
+  "xxxxxbuiiibxxxxx",
+  "xxxxbuubbiibxxxx",
+  "xxxxbubxxbibxxxx",
+  "xxxxbtbxxbibxxxx",
+  "xxxxbttbbuubxxxx",
+  "xxxxxbttuubxxxxx",
+  "xxxxxxbbbbxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx"
+  ];
+
+  const spriteData = sprite1;
+
+  const width = spriteData[0].length;
+  const height = spriteData.length;
+
+  // Tamanho final do título
+  const tileSize = 48;
+
+  // escala proporcional pra caber no título
+  const finalScale = Math.min(tileSize / width, tileSize / height);
+
+  // Define canvas destino
+  const canvas = document.createElement("canvas");
+  canvas.width = tileSize;
+  canvas.height = tileSize;
+  const ctx = canvas.getContext("2d");
+  
+  // desabilita suavização no contexto
+  ctx.imageSmoothingEnabled = false;
+  
+  // cria um canvas temporário para o sprite original
+  const temp = document.createElement("canvas");
+  const tctx = temp.getContext("2d");
+  temp.width = width;
+  temp.height = height;
+  
+  // desenha sprite original em escala 1:1 no temp
+  spriteData.forEach((row, y) => {
+    for (let x = 0; x < row.length; x++) {
+      const cell = row[x];
+      if (cell !== "x") {
+        tctx.fillStyle = colorMap[cell] || "#000000";
+        tctx.fillRect(x, y, 1, 1);
+      }
+    }
+  });
+  
+  // agora desenha no canvas destino usando drawImage
+  ctx.drawImage(
+    temp,
+    0, 0, width, height,
+    0, 0, tileSize, tileSize
+  );
+  
+  canvas.style.imageRendering = "pixelated";
+  
+  return canvas;
+}
+
+// - Espada De Madeira -
+function createSword1(scale = 3) {
+  const sprite1 = [
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxbbbxxxxxxx",
+  "xxxxxbbibbxxxxxx",
+  "xxxxxbiuubxxxxxx",
+  "xxxxxbiuubxxxxxx",
+  "xxxxxbiuubxxxxxx",
+  "xxxxxbitubxxxxxx",
+  "xxxxbbtttbbxxxxx",
+  "xxxxbuuuuubxxxxx",
+  "xxxxbbbtbbbxxxxx",
+  "xxxxxxbubxxxxxxx",
+  "xxxxxxbbbxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx"
+  ];
+
+  const spriteData = sprite1;
+
+  const width = spriteData[0].length;
+  const height = spriteData.length;
+
+  // Tamanho final do título
+  const tileSize = 48;
+
+  // escala proporcional pra caber no título
+  const finalScale = Math.min(tileSize / width, tileSize / height);
+
+  // Define canvas destino
+  const canvas = document.createElement("canvas");
+  canvas.width = tileSize;
+  canvas.height = tileSize;
+  const ctx = canvas.getContext("2d");
+  
+  // desabilita suavização no contexto
+  ctx.imageSmoothingEnabled = false;
+  
+  // cria um canvas temporário para o sprite original
+  const temp = document.createElement("canvas");
+  const tctx = temp.getContext("2d");
+  temp.width = width;
+  temp.height = height;
+  
+  // desenha sprite original em escala 1:1 no temp
+  spriteData.forEach((row, y) => {
+    for (let x = 0; x < row.length; x++) {
+      const cell = row[x];
+      if (cell !== "x") {
+        tctx.fillStyle = colorMap[cell] || "#000000";
+        tctx.fillRect(x, y, 1, 1);
+      }
+    }
+  });
+  
+  // agora desenha no canvas destino usando drawImage
+  ctx.drawImage(
+    temp,
+    0, 0, width, height,
+    0, 0, tileSize, tileSize
+  );
+  
+  canvas.style.imageRendering = "pixelated";
+  
+  return canvas;
+}
+
+// - Poção de cura -
+function createPc1(scale = 3) {
+  const sprite1 = [
+  "xxxxxxxxxxxxxxxx",
+  "xxxxbbbbbbbbxxxx",
+  "xxxxbwzzzzwbxxxx",
+  "xxxxxbwyywbxxxxx",
+  "xxxxxbwrrwbxxxxx",
+  "xxxxxbwrrwbxxxxx",
+  "xxxxxbwrrwbxxxxx",
+  "xxxxxbwrrwbxxxxx",
+  "xxxxxbwprwbxxxxx",
+  "xxxxxbwppwbxxxxx",
+  "xxxxxbwppwbxxxxx",
+  "xxxxxbwppwbxxxxx",
+  "xxxxxbwppwbxxxxx",
+  "xxxxxxbwwbxxxxxx",
+  "xxxxxxxbbxxxxxxx",
+  "xxxxxxxxxxxxxxxx"
+  ];
+
+  const spriteData = sprite1;
+
+  const width = spriteData[0].length;
+  const height = spriteData.length;
+
+  // Tamanho final do título
+  const tileSize = 48;
+
+  // escala proporcional pra caber no título
+  const finalScale = Math.min(tileSize / width, tileSize / height);
+
+  // Define canvas destino
+  const canvas = document.createElement("canvas");
+  canvas.width = tileSize;
+  canvas.height = tileSize;
+  const ctx = canvas.getContext("2d");
+  
+  // desabilita suavização no contexto
+  ctx.imageSmoothingEnabled = false;
+  
+  // cria um canvas temporário para o sprite original
+  const temp = document.createElement("canvas");
+  const tctx = temp.getContext("2d");
+  temp.width = width;
+  temp.height = height;
+  
+  // desenha sprite original em escala 1:1 no temp
+  spriteData.forEach((row, y) => {
+    for (let x = 0; x < row.length; x++) {
+      const cell = row[x];
+      if (cell !== "x") {
+        tctx.fillStyle = colorMap[cell] || "#000000";
+        tctx.fillRect(x, y, 1, 1);
+      }
+    }
+  });
+  
+  // agora desenha no canvas destino usando drawImage
+  ctx.drawImage(
+    temp,
+    0, 0, width, height,
+    0, 0, tileSize, tileSize
+  );
+  
+  canvas.style.imageRendering = "pixelated";
+  
+  return canvas;
+}
+
+// - Antídoto -
+function createPc2(scale = 3) {
+  const sprite1 = [
+  "xxxxxxxxxxxxxxxx",
+  "xxxxbbbbbbbbxxxx",
+  "xxxxbwzzzzwbxxxx",
+  "xxxxxbwyywbxxxxx",
+  "xxxxxbwggwbxxxxx",
+  "xxxxxbwggwbxxxxx",
+  "xxxxxbwggwbxxxxx",
+  "xxxxxbwggwbxxxxx",
+  "xxxxxbwmgwbxxxxx",
+  "xxxxxbwmmwbxxxxx",
+  "xxxxxbwmmwbxxxxx",
+  "xxxxxbwmmwbxxxxx",
+  "xxxxxbwmmwbxxxxx",
+  "xxxxxxbwwbxxxxxx",
+  "xxxxxxxbbxxxxxxx",
+  "xxxxxxxxxxxxxxxx"
+  ];
+
+  const spriteData = sprite1;
+
+  const width = spriteData[0].length;
+  const height = spriteData.length;
+
+  // Tamanho final do título
+  const tileSize = 48;
+
+  // escala proporcional pra caber no título
+  const finalScale = Math.min(tileSize / width, tileSize / height);
+
+  // Define canvas destino
+  const canvas = document.createElement("canvas");
+  canvas.width = tileSize;
+  canvas.height = tileSize;
+  const ctx = canvas.getContext("2d");
+  
+  // desabilita suavização no contexto
+  ctx.imageSmoothingEnabled = false;
+  
+  // cria um canvas temporário para o sprite original
+  const temp = document.createElement("canvas");
+  const tctx = temp.getContext("2d");
+  temp.width = width;
+  temp.height = height;
+  
+  // desenha sprite original em escala 1:1 no temp
+  spriteData.forEach((row, y) => {
+    for (let x = 0; x < row.length; x++) {
+      const cell = row[x];
+      if (cell !== "x") {
+        tctx.fillStyle = colorMap[cell] || "#000000";
+        tctx.fillRect(x, y, 1, 1);
+      }
+    }
+  });
+  
+  // agora desenha no canvas destino usando drawImage
+  ctx.drawImage(
+    temp,
+    0, 0, width, height,
+    0, 0, tileSize, tileSize
+  );
+  
+  canvas.style.imageRendering = "pixelated";
+  
+  return canvas;
+}
+
+// - Chapéu De Palha -
+function createHat1(scale = 3) {
+  const sprite1 = [
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxbbbbbbxxxxx",
+  "xxxxbzzzzzzbxxxx",
+  "xxxbbzzzzzzbbxxx",
+  "xxbyyyyyyyyyybxx",
+  "xxbbbbbbbbbbbbxx",
+  "xxxxxxxxxxxxxxxx",
+  "xxxxxxxxxxxxxxxx",
   "xxxxxxxxxxxxxxxx",
   "xxxxxxxxxxxxxxxx",
   "xxxxxxxxxxxxxxxx"
