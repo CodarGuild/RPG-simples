@@ -2,7 +2,44 @@
 function renderBattle(){  
   const cont=document.createElement("div"); cont.innerHTML=`<h3>⚔️ Batalha: ${currentEnemy.name}</h3>`;  
   const info=document.createElement("div");  
-  info.innerHTML=`<p>👤 Você: ${player.hp}/${player.maxHp} HP</p><p>👾 ${currentEnemy.name}: ${currentEnemy.hp}/${currentEnemy.maxHp} HP</p>`;  
+  
+  // cria o sprite do player
+  const playerLine = document.createElement("p");
+  const playerSpriteEl = createPlayer(frameSprite, 3, 30);
+  playerSpriteEl.classList.add("hud-sprite");
+  
+  // adiciona o texto do player
+  playerLine.appendChild(playerSpriteEl);
+  playerLine.appendChild(document.createTextNode(` Você: ${player.hp}/${player.maxHp} HP`));
+  info.appendChild(playerLine);
+  
+  // cria o sprite do inimigo
+  const enemyLine = document.createElement("p");
+  let enemySpriteEl = null;
+  
+  if (currentEnemy.name==="Slime"){
+    enemySpriteEl = createSlime(3, 30);
+  }
+  
+  else if (currentEnemy.name==="Lobo"){
+    enemySpriteEl = createWolf(3);
+  }
+  
+  else if (currentEnemy.name==="Cogumelo"){
+    enemySpriteEl = createCogumelo(3, 30);
+  }
+  
+  else if (currentEnemy.name==="Urso"){
+    enemySpriteEl = createBear(3, 30);
+  }
+  
+  enemySpriteEl.classList.add("hud-sprite");
+  
+  // adiciona o texto do inimigo
+  enemyLine.appendChild(enemySpriteEl);
+  enemyLine.appendChild(document.createTextNode(` ${currentEnemy.name}: ${currentEnemy.hp}/${currentEnemy.maxHp} HP`));
+  info.appendChild(enemyLine);
+  
   cont.appendChild(info);  
   
   const log=document.createElement("p"); cont.appendChild(log);  
@@ -104,16 +141,18 @@ function renderBattle(){
      
     if (player.poisoned) {
       player.hp -= player.poisonDamage;
-      
-      log.textContent = `Você causou ${pdmg}! ${currentEnemy.name} causou ${edmg}! Veneno causa -${player.poisonDamage} de dano!`;
+      showDialog(`Você causou ${pdmg}! ${currentEnemy.name} causou ${edmg}! Veneno causa -${player.poisonDamage} de dano!`, () => {  
+          render(); // volta pra batalha normal  
+        });
       
       if (checkGameOver()) return; // checa se a vida acaba
     }
       
     else {
-      log.textContent=`Você causou ${pdmg}! ${currentEnemy.name} causou ${edmg}!`;  
-    }
-    info.innerHTML=`<p>👤 Você: ${player.hp}/${player.maxHp} HP</p><p>👾 ${currentEnemy.name}: ${currentEnemy.hp}/${currentEnemy.maxHp} HP</p>`;  
+      showDialog(`Você causou ${pdmg}! ${currentEnemy.name} causou ${edmg}!`, () => {  
+          render(); // volta pra batalha normal  
+        });
+      }
   };  
   
   document.getElementById("app").appendChild(cont);  
