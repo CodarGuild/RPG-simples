@@ -3,7 +3,7 @@ let dialogActive = false;
   
 let frameSprite = 0;
 
-let area = "menu";
+let area = "village";
 
 let prevArea = null;  
     
@@ -255,7 +255,7 @@ function render(){
   shopModal.style.display="none";  
   inventoryModal.style.display="none";  
   dialogBox.style.display="none";  
-  if(area === "menu") renderMenu();
+  //if(area === "menu") renderMenu();
   if(area==="village") renderVillage();  
   if(area==="world") renderWorld();  
   if(area==="battle") renderBattle();  
