@@ -7,12 +7,12 @@ function renderMenu() {
 
   const menu = document.createElement("div");
   menu.style.textAlign = "center";
-  menu.style.padding = "30px";
+  //menu.style.padding = "30px";
 
   const titulo = document.createElement("h1");
   titulo.classList.add("titulo");
   titulo.textContent = "RPG RETRO";
-  titulo.style.fontSize = "3rem";
+  //titulo.style.fontSize = "3rem";
   menu.appendChild(titulo);
 
   // Iniciar Jogo
@@ -51,12 +51,12 @@ function renderConfig() {
 
   const configDiv = document.createElement("div");
   configDiv.style.textAlign = "center";
-  configDiv.style.padding = "30px";
+  //configDiv.style.padding = "30px";
 
   const titulo = document.createElement("h2");
   titulo.classList.add("titulo");
   titulo.textContent = "Configurações";
-  titulo.style.fontSize = "2rem";
+  //titulo.style.fontSize = "2rem";
   configDiv.appendChild(titulo);
 
   const somBtn = document.createElement("button");
