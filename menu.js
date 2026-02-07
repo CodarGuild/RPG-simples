@@ -22,6 +22,7 @@ function renderMenu() {
   iniciarBtn.style.margin = "10px";
   iniciarBtn.style.fontSize = "18px";
   iniciarBtn.onclick = () => {
+    app.innerHTML = "";
     area = "village";
     if (musicaAtiva) tocarSom();
     render();
