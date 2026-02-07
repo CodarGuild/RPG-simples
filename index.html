@@ -6,97 +6,236 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 <title>RPG simples</title>  
 <style>  
-html, body { height:100%; margin:0; }  
-body {  
-  display:flex; justify-content:center; align-items:center;  
-  background:#111; color:#eee; font-family:Arial, sans-serif;  
-}  
-#game-wrapper { width:100%; display:flex; justify-content:center; align-items:center; }  
-#app { text-align:center; }  /* MAPAS */
-.map { display:grid; gap:4px; background:#222; margin-top:10px; }
-.village-map      { grid-template-columns:repeat(4,48px); }
-.world-map        { grid-template-columns:repeat(5,48px); }
-.house-map        { grid-template-columns:repeat(3,48px); }
-.forest-map       { grid-template-columns:repeat(5,48px); }
-.Wizard-House-map { grid-template-columns:repeat(3,48px); }
-
-/* Tiles */
-.tile {
-width:48px; height:48px; background:#444;
-display:flex; justify-content:center; align-items:center;
-cursor:pointer; font-size:22px; color:white;
-}
-
-/* BOTÕES DE BATALHA */
-.attack-btn, .battle-inv-btn {
-background: linear-gradient(45deg, #ff4e50, #f9d423);
-border:2px solid #f9d423;
-padding:6px 12px; margin:4px;
-font-size:16px; color:#111; font-weight:bold; border-radius:8px;
-cursor:pointer;
-}
-.attack-btn:hover, .battle-inv-btn:hover { transform:scale(1.05); }
-
-/* LOJA */
-#shop-modal {
-display:none; position:fixed; top:50%; left:50%;
-transform:translate(-50%,-50%);
-width:320px; padding:12px;
-background:#222; border:2px solid #555; border-radius:8px;
-z-index:200; text-align:center;
-}
-.shop-btn {
-display:block; margin:6px auto; padding:6px 12px;
-background:linear-gradient(45deg, #21520f, #58b337);; color:white;
-border:solid #87ff5c; border-radius:5px;
-cursor:pointer; font-size:14px;
-}
-.shop-btn:hover { background:#40916C; }
-
-/* INVENTÁRIO */
-#inventory-modal {
-display:none; position:fixed;
-top:50%; left:50%; transform:translate(-50%,-50%);
-width:300px; padding:12px;
-background:#222; border:2px solid #555; border-radius:8px;
-z-index:300;
-}
-#inventory-modal h3 {
-margin:0; color:#f9d423; font-size:18px; text-align:center;
-}
-.inventory-stats { font-size:16px; margin:6px 0; text-align:left; padding-left:8px; }
-.inventory-grid {
-display:grid; grid-template-columns:repeat(4,50px);
-gap:6px; justify-content:center;
-}
-.inventory-slot {
-width:50px; height:50px;
-background:#333; border:2px solid #555;
-display:flex; justify-content:center; align-items:center;
-font-size:22px; color:#f9d423;
-cursor:pointer;
-}
-.inventory-slot.equipped { opacity:0.5; }
-#close-inv {
-margin-top:8px; padding:6px 10px;
-background:#f9d423; color:#111; border:none; border-radius:5px;
-font-weight:bold; cursor:pointer; font-size:14px;
-}
-
-/* DIÁLOGO */
-#dialog-box {
-display:none; position:fixed;
-top:50%; left:50%; transform:translate(-50%,-50%);
-width:320px; padding:12px;
-background:#222; border:2px solid #777; border-radius:8px;
-z-index:400;
-}
-#dialog-box p { font-size:16px; margin:8px 0; }
-#dialog-ok {
-margin-top:8px; padding:6px 12px;
-background:#f9d423; color:#111; border:none;
-border-radius:5px; cursor:pointer; font-size:14px;
-}
+    body {  
+      display:flex; 
+      justify-content:center; 
+      align-items:center;  
+      background:#111; 
+      color:#eee; 
+      font-family:Arial, 
+      sans-serif;  
+    }  
+  
+    #game-wrapper { 
+      width:100%; 
+      display:flex; 
+      justify-content:center; 
+      align-items:center; 
+    }  
+  
+    #app { 
+      text-align:center; 
+    }  
+  
+    /* MAPAS */
+    .map { 
+      display:grid; 
+      gap:4px; 
+      background:#222; 
+      margin-top:10px; 
+    }
+  
+    .village-map      { grid-template-columns:repeat(4,48px); }
+    .world-map        { grid-template-columns:repeat(5,48px); }
+    .house-map        { grid-template-columns:repeat(3,48px); }
+    .forest-map       { grid-template-columns:repeat(5,48px); }
+    .Wizard-House-map { grid-template-columns:repeat(3,48px); }
+      
+    /* Menu */
+    @keyframes wavy {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      20% {
+        transform: translateY(-8px);
+      }
+      40% {
+        transform: translateY(0px);
+      }
+      60% {
+        transform: translateY(-4px);
+      }
+      80% {
+        transform: translateY(0px);
+      }
+    }
+    
+    .titulo {
+      font-family: monospace;
+      color: #fff;
+      display: inline-block;
+      animation: wavy 1.6s infinite ease-in-out;
+    }
+  
+    .button-menu {
+      background: linear-gradient(45deg, #ff4e50, #f9d423);
+      border:2px solid #f9d423;
+      padding:6px 12px; 
+      margin:4px;
+      font-size:16px;
+      color:#111;
+      font-weight:bold; 
+      border-radius:8px;
+      cursor:pointer;
+    }
+    
+    /* Tiles */
+    .tile {
+      width:48px; 
+      height:48px; 
+      background:#444;
+      display:flex; 
+      justify-content:center; 
+      align-items:center;
+      cursor:pointer; 
+      font-size:22px;
+      color:white;
+    }
+    
+    /* BOTÕES DE BATALHA */
+    .attack-btn, .battle-inv-btn {
+      background: linear-gradient(45deg, #ff4e50, #f9d423);
+      border:2px solid #f9d423;
+      padding:6px 12px; 
+      margin:4px;
+      font-size:16px;
+      color:#111;
+      font-weight:bold; 
+      border-radius:8px;
+      cursor:pointer;
+    }
+  
+    .attack-btn:hover, .battle-inv-btn:hover { 
+      transform:scale(1.05); 
+    }
+    
+    /* LOJA */
+    #shop-modal {
+      display: none; 
+      position: fixed; 
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      width: 320px; 
+      padding: 12px;
+      background: #222; 
+      border: 2px solid #555; 
+      border-radius: 8px;
+      z-index: 200; 
+      text-align:center;
+    }
+  
+    .shop-btn {
+      display:block; 
+      margin:6px auto; 
+      padding:6px 12px;
+      background:linear-gradient(45deg, #21520f, #58b337);
+      color:white;
+      border:solid #87ff5c; 
+      border-radius:5px;
+      cursor:pointer; 
+      font-size:14px;
+    }
+  
+    .shop-btn:hover { 
+      background:#40916C; 
+    }
+    
+    /* INVENTÁRIO */
+    #inventory-modal {
+      display:none;
+      position:fixed;
+      top:50%;
+      left:50%; 
+      transform:translate(-50%,-50%);
+      width:300px;
+      padding:12px;
+      background:#222; 
+      border:2px solid #555; 
+      border-radius:8px;
+      z-index:300;
+    }
+  
+    #inventory-modal h3 {
+      margin:0; 
+      color:#f9d423; 
+      font-size:18px; 
+      text-align:center;
+    }
+  
+    .inventory-stats { 
+      font-size:16px; 
+      margin:6px 0; 
+      text-align:left;
+      padding-left:8px;
+    }
+  
+    .inventory-grid {
+      display:grid; 
+      grid-template-columns:repeat(4,50px);
+      gap:6px; 
+      justify-content:center;
+    }
+  
+    .inventory-slot {
+      width:50px; 
+      height:50px;
+      background:#333; 
+      border:2px solid #555;
+      display:flex; 
+      justify-content:center; 
+      align-items:center;
+      font-size:22px; 
+      color:#f9d423;
+      cursor:pointer;
+    }
+  
+    .inventory-slot.equipped { 
+      opacity:0.5; 
+    }
+  
+    #close-inv {
+      margin-top:8px; 
+      padding:6px 10px;
+      background:#f9d423; 
+      color:#111; 
+      border:none;
+      border-radius:5px;
+      font-weight:bold; 
+      cursor:pointer; 
+      font-size:14px;
+    }
+    
+    /* DIÁLOGO */
+    #dialog-box {
+      display:none; 
+      position:fixed;
+      top:50%; 
+      left:50%; 
+      transform:translate(-50%,-50%);
+      width:320px;
+      padding:12px;
+      background:#222; 
+      border:2px solid #777; 
+      border-radius:8px;
+      z-index:400;
+    }
+  
+    #dialog-box p { 
+      font-size:16px; 
+      margin:8px 0; 
+    }
+  
+    #dialog-ok {
+      margin-top:8px; 
+      padding:6px 12px;
+      background:#f9d423; 
+      color:#111; 
+      border:none;
+      border-radius:5px; 
+      cursor:pointer;
+      font-size:14px;
+    }
   
 </style>
 
@@ -126,6 +265,8 @@ border-radius:5px; cursor:pointer; font-size:14px;
 <script src="sprites.js"></script>
   
 <script src="batalha.js"></script>
+  
+<script src="menu.js"></script>
   
 <script src="mundo.js"></script>
   

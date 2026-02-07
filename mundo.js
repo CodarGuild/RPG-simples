@@ -1,11 +1,11 @@
-// — Variáveis Importantes —
+// — ESTADO DO JOGO —  
 let dialogActive = false; 
   
 let frameSprite = 0;
-    
-// — ESTADO DO JOGO —  
-let area="village";  
-    
+
+let area = "menu";
+renderMenu();
+
 let prevArea = null;  
     
 // — Itens —  
@@ -248,14 +248,18 @@ function openInventory(){
 // — MOVIMENTO ADJACENTE —  
 function isAdjacent(x,y,obj){  
   return Math.abs(obj.x-x)<=1 && Math.abs(obj.y-y)<=1 && !(obj.x===x && obj.y===y);  
-}  
-  
+}
+
 // — RENDER —  
 function render(){  
   document.getElementById("app").innerHTML="";  
   shopModal.style.display="none";  
   inventoryModal.style.display="none";  
   dialogBox.style.display="none";  
+  if (area === "menu") {
+    renderMenu();
+    return; 
+  }
   if(area==="village") renderVillage();  
   if(area==="world") renderWorld();  
   if(area==="battle") renderBattle();  
@@ -375,15 +379,12 @@ function renderForest(){
       t.onclick=()=>{  
         if(!isAdjacent(x,y,player)) return;  
         
-        player.x=x; 
-        player.y=y;  
+        if(cell==="Árvore") return;
         
-        if(cell==="Árvore"){  
-          forestPlayer.x = x;  
-          forestPlayer.y = y;  
-          render();  
-        }  
-        else if(cell==="Baú"){   
+        player.x=x; 
+        player.y=y;
+          
+        if(cell==="Baú"){   
           render();   
           player.inventory.push({id: "anel 01", type: ringItem.type});  
           forestGrid[3][3] = "Grama";  
@@ -476,7 +477,9 @@ function renderWorld(){
       };      
   
       t.onclick = () => {  
-        if(!isAdjacent(x,y,player)) return;  
+        if(!isAdjacent(x,y,player)) return; 
+        
+        if(cell==="Árvore") return;
         
         // mover o player  
         player.x = x;  
@@ -488,13 +491,7 @@ function renderWorld(){
           area="wizardHouse";  
           render();  
           return;  
-        }  
-
-        if(cell==="Árvore"){  
-          forestPlayer.x = x;  
-          forestPlayer.y = y;  
-          render();  
-        } 
+        }
           
         if(cell==="Casa"){  
           player.x = 3;  
@@ -576,8 +573,6 @@ function renderHouse(){
 
   cont.appendChild(map); document.getElementById("app").appendChild(cont);
 }
-  
-tocarSom();
 
 render();
   
