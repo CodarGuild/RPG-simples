@@ -155,26 +155,28 @@ function renderBattle(){
       }
   };  
   
-  document.getElementById("app").appendChild(cont);  
+  col.appendChild(cont);  
 }  
 
 // — Game Over —  
 function checkGameOver() {  
   if (player.hp <= 0) {  
     // Mostra tela de Game Over  
-    document.getElementById("app").innerHTML = `  
-      <div style="text-align:center; color:#f55; font-size:24px; padding:20px;">  
-        <p>💀 GAME OVER 💀</p>  
-        <button id="restart-btn" style="  
-          padding:10px 18px;  
+    col.innerHTML = `  
+      <p style="
+          font-size:30px;
+          color:#ff2121;
+        ">GAME_OVER</p>
+    
+      <button id="restart-btn" style="  
+          padding:5px;  
           font-size:18px;  
           background:#f9d423;  
           color:#111;  
           border:none;  
           border-radius:8px;  
           cursor:pointer;  
-        ">Recomeçar</button>  
-      </div>  
+        ">Recomeçar</button>   
     `;  
       
     document.getElementById("restart-btn").onclick = () => {  

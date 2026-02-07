@@ -1,3 +1,13 @@
+// Bootstrap
+const container = document.createElement("div");
+container.className = "container d-flex min-vh-100 align-items-center";
+  
+const row = document.createElement("div");
+row.className = "row w-100 justify-content-center";
+  
+const col = document.createElement("div");
+col.className = "col-md-6 text-center";
+
 // — ESTADO DO JOGO —  
 let dialogActive = false; 
   
@@ -251,7 +261,7 @@ function isAdjacent(x,y,obj){
 
 // — RENDER —  
 function render(){  
-  document.getElementById("app").innerHTML="";  
+  col.innerHTML="";  
   shopModal.style.display="none";  
   inventoryModal.style.display="none";  
   dialogBox.style.display="none";  
@@ -351,7 +361,7 @@ function renderWizardHouse(){
     });  
   });  
   
-  cont.appendChild(map); document.getElementById("app").appendChild(cont);  
+  cont.appendChild(map); col.appendChild(cont);  
 }
 
 // — FLORESTA —  
@@ -401,7 +411,7 @@ function renderForest(){
   });  
   
   cont.appendChild(map);   
-  document.getElementById("app").appendChild(cont);  
+  col.appendChild(cont);  
 }  
   
 // — VILA —  
@@ -452,7 +462,7 @@ function renderVillage(){
   
   });
   
-  cont.appendChild(map); document.getElementById("app").appendChild(cont);
+  cont.appendChild(map); col.appendChild(cont);
 }      
 
 // — MUNDO —  
@@ -520,7 +530,7 @@ function renderWorld(){
     });  
   });  
   
-  cont.appendChild(map); document.getElementById("app").appendChild(cont);  
+  cont.appendChild(map); col.appendChild(cont);  
 }
 
 // — CASA —
@@ -567,7 +577,7 @@ function renderHouse(){
     });
   });
 
-  cont.appendChild(map); document.getElementById("app").appendChild(cont);
+  cont.appendChild(map); col.appendChild(cont);
 }
 
 render();

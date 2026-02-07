@@ -2,86 +2,93 @@
 let musicaAtiva = false;
 
 function renderMenu() {
+  // Limpa a tela
   const app = document.getElementById("app");
-  app.innerHTML = "";
+  col.innerHTML = "";
 
-  const menu = document.createElement("div");
-  menu.style.textAlign = "center";
-  menu.style.padding = "30px";
-
+  // Título
   const titulo = document.createElement("h1");
-  titulo.classList.add("titulo");
-  titulo.textContent = "RPG RETRO";
-  titulo.style.fontSize = "3rem";
-  menu.appendChild(titulo);
+  titulo.classList.add("menu-title");
 
-  // Iniciar Jogo
+  const texto = "RPG Simples";
+  for (let i = 0; i < texto.length; i++) {
+    const span = document.createElement("span");
+    span.textContent = texto[i];
+    span.classList.add("letra");
+    span.style.animationDelay = `${i * 0.08}s`;
+    titulo.appendChild(span);
+  }
+
+  // Botões
   const iniciarBtn = document.createElement("button");
-  iniciarBtn.classList.add("button-menu");
   iniciarBtn.textContent = "▶️ Iniciar Jogo";
-  iniciarBtn.style.margin = "10px";
-  iniciarBtn.style.fontSize = "18px";
+  iniciarBtn.className = "btn btn-primary m-2";
+
+  const configBtn = document.createElement("button");
+  configBtn.textContent = "⚙️ Configurações";
+  configBtn.className = "btn btn-secondary m-2";
+
+  // Funções
   iniciarBtn.onclick = () => {
-    app.innerHTML = "";
     area = "village";
     if (musicaAtiva) tocarSom();
     render();
   };
-
-  // Configurações
-  const configBtn = document.createElement("button");
-  configBtn.classList.add("button-menu");
-  configBtn.textContent = "⚙️ Configurações";
-  configBtn.style.margin = "10px";
-  configBtn.style.fontSize = "18px";
   configBtn.onclick = () => renderConfig();
 
-  menu.appendChild(iniciarBtn);
-  menu.appendChild(document.createElement("br"));
-  menu.appendChild(configBtn);
+  // Montando tudo
+  col.appendChild(titulo);
+  col.appendChild(iniciarBtn);
+  col.appendChild(configBtn);
 
-  app.appendChild(menu);
+  row.appendChild(col);         
+  container.appendChild(row);    
+  app.appendChild(container);   
 }
 
 
 // — Configurações —
 function renderConfig() {
   const app = document.getElementById("app");
-  app.innerHTML = "";
-
-  const configDiv = document.createElement("div");
-  configDiv.style.textAlign = "center";
-  configDiv.style.padding = "30px";
-
+  col.innerHTML = "";
+  
+  // Título
   const titulo = document.createElement("h2");
-  titulo.classList.add("titulo");
-  titulo.textContent = "Configurações";
-  titulo.style.fontSize = "2rem";
-  configDiv.appendChild(titulo);
+  titulo.classList.add("menu-title");
 
+  const texto = "Configurações";
+  for (let i = 0; i < texto.length; i++) {
+    const span = document.createElement("span");
+    span.textContent = texto[i];
+    span.classList.add("letra");
+    span.style.animationDelay = `${i * 0.08}s`;
+    titulo.appendChild(span);
+  }
+
+  // Botões
   const somBtn = document.createElement("button");
-  somBtn.classList.add("button-menu");
-  somBtn.style.margin = "10px";
-  somBtn.style.fontSize = "18px";
   somBtn.textContent = musicaAtiva ? "🔊 Som: ON" : "🔇 Som: OFF";
+  somBtn.className = "btn btn-primary";
 
+  const voltarBtn = document.createElement("button");
+  voltarBtn.textContent = "⬅️ Voltar";
+  voltarBtn.className = "btn btn-secondary";
+
+  // Funções
   somBtn.onclick = () => {
     musicaAtiva = !musicaAtiva;
     somBtn.textContent = musicaAtiva ? "🔊 Som: ON" : "🔇 Som: OFF";
   };
-
-  const voltarBtn = document.createElement("button");
-  voltarBtn.classList.add("button-menu");
-  voltarBtn.textContent = "⬅️ Voltar";
-  voltarBtn.style.margin = "10px";
-  voltarBtn.style.fontSize = "18px";
-
+  
   voltarBtn.onclick = () => renderMenu();
+  
+  // Montando tudo
+  col.appendChild(titulo);
+  col.appendChild(somBtn);
+  col.appendChild(voltarBtn);
 
-  configDiv.appendChild(somBtn);
-  configDiv.appendChild(document.createElement("br"));
-  configDiv.appendChild(voltarBtn);
-
-  app.appendChild(configDiv);
+  row.appendChild(col);         
+  container.appendChild(row);    
+  app.appendChild(container);
 }
 
