@@ -1,7 +1,8 @@
 // — BATALHA —  
 function renderBattle(){  
-  const cont=document.createElement("div"); cont.innerHTML=`<h3>⚔️ Batalha: ${currentEnemy.name}</h3>`;  
+  const cont=document.createElement("div"); cont.innerHTML=`<h3 class='text-nowrap'>⚔️ Batalha: ${currentEnemy.name}</h3>`;  
   const info=document.createElement("div");  
+  info.classList.add("text-nowrap");
   
   // cria o sprite do player
   const playerLine = document.createElement("p");
