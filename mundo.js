@@ -317,7 +317,7 @@ function renderTile(cell, x, y) {
   
 // — CASA DO MAGO —  
 function renderWizardHouse(){  
-  const cont=document.createElement("div"); cont.innerHTML="<h3>🏚️ Destroços</h3>";  
+  const cont=document.createElement("div"); cont.innerHTML="<h3 style='margin-left:21px;'>Destroços</h3>";  
   const map=document.createElement("div"); map.classList.add("map","Wizard-House-map");  
   
   wizardHouseGrid.forEach((row,y)=>{  
@@ -367,7 +367,7 @@ function renderWizardHouse(){
 // — FLORESTA —  
 function renderForest(){  
   checkLevelUp();
-  const cont=document.createElement("div"); cont.innerHTML="<h3>🌲 Floresta</h3>";  
+  const cont=document.createElement("div"); cont.innerHTML="<h3 style='margin-left:25px;'>Floresta</h3>";  
   const map=document.createElement("div"); map.classList.add("map","forest-map");  
   
   forestGrid.forEach((row,y)=>{  
@@ -416,7 +416,7 @@ function renderForest(){
   
 // — VILA —  
 function renderVillage(){
-  const cont=document.createElement("div"); cont.innerHTML="<h3>🏡 Vila</h3>";
+  const cont=document.createElement("div"); cont.innerHTML="<h3 style='margin-left:25px;'>Vila</h3>";
   const map=document.createElement("div"); map.classList.add("map","village-map");
   
   villageGrid.forEach((row,y)=>{
@@ -468,7 +468,7 @@ function renderVillage(){
 // — MUNDO —  
 function renderWorld(){  
   checkLevelUp();
-  const cont=document.createElement("div"); cont.innerHTML="<h3>🌍 Mundo</h3>";  
+  const cont=document.createElement("div"); cont.innerHTML="<h3 style='margin-left:25px;'>Mundo</h3>";  
   const map=document.createElement("div"); map.classList.add("map","world-map");  
   worldGrid.forEach((row,y)=>{  
     row.forEach((cell,x)=>{  
@@ -535,7 +535,7 @@ function renderWorld(){
 
 // — CASA —
 function renderHouse(){
-  const cont=document.createElement("div"); cont.innerHTML="<h3>🏠 Casa</h3>";
+  const cont=document.createElement("div"); cont.innerHTML="<h3 style='margin-left:25px;'>Casa</h3>";
   const map=document.createElement("div"); map.classList.add("map","house-map");
 
   houseMap.forEach((row,y)=>{
